@@ -99,18 +99,18 @@ function run(argv)
     try
     {
         destination = word.open(null, {
-            fileName:sNewDoc,
-            confirmConversions:true,
-            readOnly:(parseInt(word.version()) < vOffice2013),
-            addToRecentFiles:false,
-            repair:false,
-            showingRepairs:false,
-            passwordDocument:null,
-            passwordTemplate:null,
-            revert:false,
-            writePassword:null,
-            writePasswordTemplate:null,
-            fileConverter:wdOpenFormatOpenFormatAuto
+            fileName: sNewDoc,
+            confirmConversions: true,
+            readOnly: (parseInt(word.version()) < vOffice2013),
+            addToRecentFiles: false,
+            repair: false,
+            showingRepairs: false,
+            passwordDocument: null,
+            passwordTemplate: null,
+            revert: false,
+            writePassword: null,
+            writePasswordTemplate: null,
+            fileConverter: wdOpenFormatOpenFormatAuto
             })
     }
     catch(ex)
@@ -148,7 +148,7 @@ function run(argv)
     if (((destination.activeWindow.view.viewType == wdOutlineView) || ((destination.activeWindow.view.viewType == wdMasterView) || (destination.activeWindow.view.viewType == wdReadingView))) && (destination.subdocuments.count == 0))
     {
         // Change the Type property of the current document to normal
-        destination.activeWindow.view.setViewType(wdNormalView)
+        destination.activeWindow.view.viewType = wdNormalView
     }
     
     // Compare to the base document
@@ -159,20 +159,14 @@ function run(argv)
         {
             // Contrary to the original TortoiseSVN/Git script, we cannot use duck typing -> comment out this line,
             // as we only support the newer interface below
-            //[destination comparePath:sBaseDoc]
             $.printf('Warning: Office versions up to Office 2000 are not officially supported.\n')
-            destination.comparePath(sBaseDoc, {
-                authorName: 'Comparison',
-                target: wdCompareTargetNew,
-                detectFormatChanges: true,
-                ignoreAllComparisonWarnings: true,
-                addToRecentFiles: false
+            destination.compare({
+                path: sBaseDoc
             })
-            
         }
         catch(ex)
         {
-            $.printf('Error comparing %s and %s\n', sBaseDoc, sNewDoc)
+            $.printf('Error comparing %s and %s: %s\n', sBaseDoc, sNewDoc, ex.message)
             // Quit
             $.exit(1)
         }
@@ -182,7 +176,8 @@ function run(argv)
         // Compare for Office XP (2002) and later
         try
         {
-            destination.comparePath(sBaseDoc, { 
+            destination.compare({
+                path: sBaseDoc, 
                 authorName: 'Comparison',
                 target: wdCompareTargetNew,
                 detectFormatChanges: true,
@@ -192,9 +187,9 @@ function run(argv)
         }
         catch(ex)
         {
-            $.printf('Error comparing %s and %s\n', sBaseDoc, sNewDoc)
+            $.printf('Error comparing %s and %s: %s\n', sBaseDoc, sNewDoc, ex.message)
             // Close the first document and quit
-            destination.closeSaving(wdDoNotSaveChanges, {savingIn:null})
+            destination.closeSaving({saving: wdDoNotSaveChanges})
             $.exit(1)
         }
     }
@@ -202,17 +197,17 @@ function run(argv)
     // Show the comparison result
     if (parseInt(word.version()) < vOffice2007)
     {
-        word.activeDocument.windows[0].setVisible(true)
+        word.activeDocument.windows[0].visible = true
     }
     
     // Mark the comparison document as saved to prevent the annoying
     // 'Save as' dialog from appearing.
-    word.activeDocument.setSaved(true)
+    word.activeDocument.saved = true
     
     // Close the first document
     if (parseInt(word.version()) >= vOffice2002)
     {
-        destination.closeSaving(wdDoNotSaveChanges, {savingIn: null})
+        destination.close({saving: wdDoNotSaveChanges})
     }
 
     $.exit(0)
