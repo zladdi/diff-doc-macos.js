@@ -25,4 +25,4 @@ where Word does not have permission to access the respective file already.
 
 ## Future work
 
-Create a formula for [`brew`](https://github.com/Homebrew)
+Create a formula for [`brew`](https://github.com/Homebrew).
