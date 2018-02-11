@@ -16,9 +16,7 @@ function run(argv)
     ObjC.import('stdlib')
     ObjC.import('stdio')
 
-    var word
-    var sTempDoc, sBaseDoc, sNewDoc
-    var destination
+    var word, sTempDoc, sBaseDoc, sNewDoc, destination
 
     // Microsoft Office versions for Microsoft Windows OS
     const vOffice2000 = 9, vOffice2002 = 10, //vOffice2003 = 11,
